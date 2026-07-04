@@ -147,6 +147,24 @@ int main(void) {
     glad_glGetShaderInfoLog(vertexShader, shaderInfoLogBufSize, NULL, infoLog);
     printf("ERROR: SHADER: VERTEX: COMPILATION_FAILED\n%s\n", infoLog);
   }
+
+  // A shader program object is the final linkage of multiple shaders
+  // (like, say, a vertex-fragment shader pair)
+  unsigned int shaderProgram;
+  shaderProgram = glad_glCreateProgram();
+  glad_glAttachShader(shaderProgram, vertexShader);
+  glad_glAttachShader(shaderProgram, fragmentShader);
+  glad_glLinkProgram(shaderProgram);
+  int shaderProgramLinkSuccess;
+  glad_glGetProgramiv(shaderProgram, GL_LINK_STATUS, &shaderProgramLinkSuccess);
+
+  // Shader objects aren't needed after linking them into a shader program
+  glad_glDeleteShader(vertexShader);
+  glad_glDeleteShader(fragmentShader);
+
+  // All rendering calls after this line'll use the shaderProgram program object
+  glad_glUseProgram(shaderProgram);
+
   glViewport(0, 0, viewport.width, viewport.height);
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
