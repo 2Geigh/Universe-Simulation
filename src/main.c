@@ -143,6 +143,12 @@ int main(void) {
     printf("ERROR: SHADER: VERTEX: COMPILATION_FAILED\n%s\n", infoLog);
   }
 
+  // VAO = Vertex Array Object
+  // Stores the state of one set of vertex data and attribute configurations
+  // This allows us to quickly change rendering contexts by changing VAO binding
+  unsigned int VAO;
+  glad_glGenVertexArrays(1, &VAO);
+
   // THE OUTPUT OF THE PREVIOUS SHADER BECOMES THE INPUT FOR THE NEXT SHADER
   const char *fragmentShaderSource =
       "#version 330\n"
@@ -152,7 +158,7 @@ int main(void) {
 
       "void main() {\n"
       // The dimensions of FragColor represent RGBA, respectively
-      "FragColor = vec4(1.0f, 0.25f, 1.0f, 1.0f)\n"
+      "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f)\n"
       "}\0";
   unsigned int fragmentShader;
   fragmentShader = glad_glCreateShader(fragmentShader);
@@ -179,9 +185,6 @@ int main(void) {
   glad_glDeleteShader(vertexShader);
   glad_glDeleteShader(fragmentShader);
 
-  // All rendering calls after this line'll use the shaderProgram program object
-  glad_glUseProgram(shaderProgram);
-
   glViewport(0, 0, viewport.width, viewport.height);
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -191,6 +194,15 @@ int main(void) {
     glad_glClearColor(0.1f, 0.3f, 0.9f, 1.0f);
     glad_glClear(GL_COLOR_BUFFER_BIT);
     glfwPollEvents(); // checks for events (e.g. keyboard or mouse inputs)
+
+    // All rendering calls after this line'll use the shaderProgram program
+    // object
+    glad_glUseProgram(shaderProgram);
+    glad_glBindVertexArray(VAO);
+    glad_glDrawArrays(GL_TRIANGLES, // Primitive type we wanna draw
+                      0, // Starting index of vertex array we're drawing
+                      3  // How many vertices you wanna draw
+    );
   }
 
   glfwTerminate();
