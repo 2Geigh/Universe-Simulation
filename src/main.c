@@ -98,7 +98,7 @@ int main(void) {
 
   unsigned int vertexShader;
   // vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  const char *vertexShaderSrouce =
+  const char *vertexShaderSource =
       "#version 330 core\n"
       // We declare this shader to apply to a
       // single 3D vector (vec3) we'll call aPos
@@ -112,20 +112,41 @@ int main(void) {
              // null
              // character that signifies the end of a string
   // Attaches the above shader source string to the declared vertexShader
-  glad_glShaderSource(vertexShader, 1, &vertexShaderSrouce,
+  glad_glShaderSource(vertexShader, 1, &vertexShaderSource,
                       NULL); // count is how many strings we're passing as
                              // shader source code (in this case, 1)
   glad_glCompileShader(vertexShader);
-
   int shaderCompilationSuccess;
-  char infoLog[512];
+  enum { shaderInfoLogBufSize = 512 };
+  char infoLog[shaderInfoLogBufSize];
   glad_glGetShaderiv(vertexShader, GL_COMPILE_STATUS,
                      &shaderCompilationSuccess);
   if (!shaderCompilationSuccess) {
-    glad_glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    glad_glGetShaderInfoLog(vertexShader, shaderInfoLogBufSize, NULL, infoLog);
     printf("ERROR: SHADER: VERTEX: COMPILATION_FAILED\n%s\n", infoLog);
   }
 
+  // THE OUTPUT OF THE PREVIOUS SHADER BECOMES THE INPUT FOR THE NEXT SHADER
+  const char *fragmentShaderSource =
+      "#version 330\n"
+      // We declare the output of this shader to apply to a single 4D vector
+      // called FragColor
+      "out vec4 FragColor;\n"
+
+      "void main() {\n"
+      // The dimensions of FragColor represent RGBA, respectively
+      "FragColor = vec4(1.0f, 0.25f, 1.0f, 1.0f)\n"
+      "}\0";
+  unsigned int fragmentShader;
+  fragmentShader = glad_glCreateShader(fragmentShader);
+  glad_glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  glad_glCompileShader(fragmentShader);
+  glad_glGetShaderiv(fragmentShader, GL_COMPILE_STATUS,
+                     &shaderCompilationSuccess);
+  if (!shaderCompilationSuccess) {
+    glad_glGetShaderInfoLog(vertexShader, shaderInfoLogBufSize, NULL, infoLog);
+    printf("ERROR: SHADER: VERTEX: COMPILATION_FAILED\n%s\n", infoLog);
+  }
   glViewport(0, 0, viewport.width, viewport.height);
 
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
