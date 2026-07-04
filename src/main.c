@@ -115,6 +115,23 @@ int main(void) {
   glad_glShaderSource(vertexShader, 1, &vertexShaderSource,
                       NULL); // count is how many strings we're passing as
                              // shader source code (in this case, 1)
+
+  // Here we specify the shape of the input vertex data for the vertex shader
+  glad_glVertexAttribPointer(
+      0, // the vertex attribution location (specified in the shader's source)
+      3, // size of the vertex attribute (in this case, vec3 is composed of 3
+         // values)
+      GL_FLOAT, // data type
+      GL_FALSE, // (TRUE/FALSE) data should be normalized to range [-1,1]
+      3 * sizeof(float), // The space between consecutive vertex attributes. In
+                         // this case, since each vertex attribute is composed
+                         // of 3 floats, one vertex attribute is 3 floats long
+                         // in memory.
+      (void *)0); // Offset of where the position data begins in the buffer (in
+                  // this case, index 0, type-casted to a void*)
+  glad_glEnableVertexAttribArray(0); // argument is vertex attribution location
+                                     // (specified in the shader's source)
+
   glad_glCompileShader(vertexShader);
   int shaderCompilationSuccess;
   enum { shaderInfoLogBufSize = 512 };
