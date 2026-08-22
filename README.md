@@ -1,4 +1,4 @@
-# Ooniverse
+# Ooniverse 🌌
 A simluation of a 2-dimensional universe from from Big Bang to (hopefully) the emergence of life and beyond.
 
 ## Build
